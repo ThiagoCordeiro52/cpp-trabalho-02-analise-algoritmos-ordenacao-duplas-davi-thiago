@@ -2,6 +2,10 @@
 
 Preencha os dados abaixo para identificar a autoria do trabalho.
 
+- Nome: *José Davi Viana Francelino*
+- Email: *jose.davi@imd.ufrn.br*
+- Turma: *DIM0120-T01*
+
 - Nome: *<insira seu nome aqui>*
 - Email: *<insira seu email aqui>*
 - Turma: *<insira sua turma aqui>*
@@ -10,7 +14,7 @@ Preencha os dados abaixo para identificar a autoria do trabalho.
 
 - [ ] Insertion sort
 - [ ] Selection sort
-- [ ] Bubble sort
+- [X] Bubble sort
 - [ ] Shell sort
 - [ ] Quick sort
 - [ ] Merge sort

@@ -13,6 +13,7 @@ using std::ostringstream;
 #include <iterator>
 using std::next;
 using std::ostream_iterator;
+using std::iter_swap;
 #include <functional>
 using std::less;
 using std::function;
@@ -57,7 +58,7 @@ namespace sa { // sa = sorting algorithms
     void radix( FwrdIt first, FwrdIt last, Comparator ){
         // [1] Determine how many digits the largest integer in the incoming range has.
         // [2] Traverse the entire range 'n_digits' times, from the less significant to the most significant (i.e. from left to right).
-        for ( size_t i{0} ; i < n_digits ; ++i ){
+//         for ( size_t i{0} ; i < n_digits ; ++i ){
             // [a]=== Buckets creation.
             // We create the 10 buckets each iteration so that they start empty every time through.
 
@@ -82,7 +83,7 @@ namespace sa { // sa = sorting algorithms
                 // For each bucket...
                     // ... copy the bucket's stored values back into the range, and
             // ...at the same time, update the destination pointer for the next iteration.
-        } // for to traverse the digits.
+//         } // for to traverse the digits.
     }
     //}}} RADIX SORT
 
@@ -102,9 +103,23 @@ namespace sa { // sa = sorting algorithms
     //}}} SELECTION SORT
 
     //{{{ BUBBLE SORT
+    /**
+     * @brief Applies bubble sort on the range [first, last)
+     *
+     * @tparam RandomIt iterator type
+     * @tparam Compare type of predicate to compare objects
+     * @param first iterator to the beggining of the range to be sorted
+     * @param last iterator to the position after the end of the range to be sorted
+     * @param cmp predicate that returns true if the first argument is less than the second 
+     */
     template< typename RandomIt, typename Compare >
     void bubble(RandomIt first, RandomIt last, Compare cmp){
-        // TODO
+        for (auto i{ first }; i != last - 1; i++) {
+            for (auto j{ i + 1 }; j != last; j++) {
+                if (cmp(*j, *i))
+                    std::iter_swap(i, j);
+            }
+        }
     }
     //}}} BUBBLE SORT
 
