@@ -124,9 +124,41 @@ namespace sa { // sa = sorting algorithms
     //}}} BUBBLE SORT
 
     //{{{ SHELL SORT
+    /**
+     * @brief Applies shell sort on the range [first, last)
+     *
+     * @tparam RandomIt iterator type
+     * @tparam Compare type of predicate to compare objects
+     * @param first iterator to the beggining of the range to be sorted
+     * @param last iterator to the position after the end of the range to be sorted
+     * @param cmp predicate that returns true if the first argument is less than the second
+     */
     template< typename RandomIt, typename Compare >
     void shell(RandomIt first, RandomIt last, Compare cmp){
-        // TODO
+        auto n {std::distance(first, last)};
+
+        // k will be incremented at each iteraction,
+        // and the gap will be 2 * floor(n / 2^(k + 1)) + 1 at each iteraction, until it is 1
+        int k{ 1 };
+        int gap;
+        do {
+            gap = 2 * floor(n / pow(2, k + 1)) + 1;
+
+            for (int i {gap}; i < n; i++) {
+                // uses insertion sort with a step of gap
+                auto aux = first[i];
+                int j {i};
+                // iterates from i to gap, decreasing at a step of gap
+                // and until the value is greater than aux
+                while (j >= gap and cmp(aux, first[j - gap])) {
+                    first[j] = first[j - gap];
+                    j -= gap;
+                }
+                first[j] = aux;
+            }
+
+            k++;
+        } while (gap > 1);
     }
     //}}} SHELL SORT
 

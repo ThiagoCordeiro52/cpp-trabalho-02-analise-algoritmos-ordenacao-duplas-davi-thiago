@@ -15,7 +15,7 @@ Preencha os dados abaixo para identificar a autoria do trabalho.
 - [ ] Insertion sort
 - [ ] Selection sort
 - [X] Bubble sort
-- [ ] Shell sort
+- [X] Shell sort
 - [ ] Quick sort
 - [ ] Merge sort
 - [ ] Radix sort
