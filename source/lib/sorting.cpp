@@ -49,4 +49,6 @@ int main( int argc, char *argv[] ) {
     test(bubble<int*, std::function<bool(int, int)>>);
     std::cout << "Shell sort: \n"; 
     test(shell<int*, std::function<bool(int, int)>>);
+    std::cout << "Merge sort: \n"; 
+    test(merge<int*, std::function<bool(int, int)>>);
 }

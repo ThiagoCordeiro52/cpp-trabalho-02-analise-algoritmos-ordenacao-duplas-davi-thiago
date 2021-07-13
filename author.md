@@ -17,7 +17,7 @@ Preencha os dados abaixo para identificar a autoria do trabalho.
 - [X] Bubble sort
 - [X] Shell sort
 - [ ] Quick sort
-- [ ] Merge sort
+- [X] Merge sort
 - [ ] Radix sort
 
 # Indique quais dos cenários de dados abaixo você conseguiu simular nos experimentos

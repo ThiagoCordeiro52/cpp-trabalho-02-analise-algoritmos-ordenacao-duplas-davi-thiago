@@ -131,7 +131,7 @@ namespace sa { // sa = sorting algorithms
      * @tparam Compare type of predicate to compare objects
      * @param first iterator to the beggining of the range to be sorted
      * @param last iterator to the position after the end of the range to be sorted
-     * @param cmp predicate that returns true if the first argument is less than the second
+     * @param cmp predicate that returns true if the first argument is less than the second 
      */
     template< typename RandomIt, typename Compare >
     void shell(RandomIt first, RandomIt last, Compare cmp){
@@ -163,9 +163,58 @@ namespace sa { // sa = sorting algorithms
     //}}} SHELL SORT
 
     //{{{ MERGE SORT
+    /**
+     * @brief Applies merge sort on the range [first, last)
+     *
+     * @tparam RandomIt iterator type
+     * @tparam Compare type of predicate to compare objects
+     * @param first iterator to the beggining of the range to be sorted
+     * @param last iterator to the position after the end of the range to be sorted
+     * @param cmp predicate that returns true if the first argument is less than the second 
+     */
     template< typename RandomIt, typename Compare >
     void merge(RandomIt first, RandomIt last, Compare cmp){
-        // TODO
+        auto size {std::distance(first, last)};
+        
+        if (size <= 1)
+            return;
+
+        auto mid {first + size / 2 };
+
+        // merge sort the two halfs of the array
+        merge(first, mid, cmp);
+        merge(mid, last, cmp);
+
+        auto size_1 {size / 2};
+        auto size_2 {size - size_1};
+
+        // Creates two temp arrays to store the two sorted ranges
+        int range_1[size_1];
+        int range_2[size_2];
+
+        // Copies the values of the two ranges to the arrays
+        std::copy(first, mid, range_1);
+        std::copy(mid, last, range_2);
+
+        auto i {0};
+        auto j {0};
+        // Itereates over the two arrays, putting the values back to the original range in the right order
+        while (i < size_1 && j < size_2) {
+            if (cmp(range_1[i], range_2[j])) {
+                *first = range_1[i];
+                i++;
+            } else {
+                *first = range_2[j];
+                j++;
+            }
+            first++;
+        }
+
+        // If the there was any values left in any of the arrays, copies them to the end of the original range
+        if (i < size_1)
+            std::copy(&range_1[i], &range_1[size_1], first);
+        else if (j < size_2)
+            std::copy(&range_2[j], &range_2[size_2], first);
     }
     //}}} MERGE SORT
 
