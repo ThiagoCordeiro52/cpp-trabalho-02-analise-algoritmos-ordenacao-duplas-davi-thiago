@@ -51,4 +51,6 @@ int main( int argc, char *argv[] ) {
     test(shell<int*, std::function<bool(int, int)>>);
     std::cout << "Merge sort: \n"; 
     test(merge<int*, std::function<bool(int, int)>>);
+    std::cout << "Insertion sort: \n"; 
+    test(insertion<int*, std::function<bool(int, int)>>);
 }

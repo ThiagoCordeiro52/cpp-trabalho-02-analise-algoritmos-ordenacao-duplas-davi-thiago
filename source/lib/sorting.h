@@ -91,14 +91,23 @@ namespace sa { // sa = sorting algorithms
     /// Implementation of the Insertion Sort algorithm.
     template< typename RandomIt, typename Compare >
     void insertion(RandomIt first, RandomIt last, Compare cmp){
-        // TODO
+        for(auto i = first + 1; i != last; i++) 
+        {
+            auto auxiliaryI = *i;
+            auto j = i;
+            for (; (j != first) && cmp(auxiliaryI, *(j - 1)); j-- ) 
+            {
+                 *j = *(j-1);
+            }
+            *j = auxiliaryI;
+        }
     }
     //}}} INSERTION SORT
 
     //{{{ SELECTION SORT
     template< typename RandomIt, typename Compare >
     void selection(RandomIt first, RandomIt last, Compare cmp){
-        // TODO
+       
     }
     //}}} SELECTION SORT
 
