@@ -106,15 +106,15 @@ namespace sa { // sa = sorting algorithms
     template< typename RandomIt, typename Compare >
     void selection(RandomIt first, RandomIt last, Compare cmp){
        for (auto i = first; i != last - 1; ++i) {
-        auto smallest = i;
-        for (auto j = i + 1; j != last; j++) {
-            if (cmp(*j, *smallest)) {
-                smallest = j;
+            auto smallest = i;
+            for (auto j = i + 1; j != last; j++) {
+                if (cmp(*j, *smallest)) {
+                    smallest = j;
+                }
             }
-        }
-        if(i != smallest) {
-            std::iter_swap(smallest, i);
-        }
+            if(i != smallest) {
+                std::iter_swap(smallest, i);
+            }
        }
     }
     //}}} SELECTION SORT
@@ -198,40 +198,47 @@ namespace sa { // sa = sorting algorithms
 
         auto mid {first + size / 2 };
 
-        // merge sort the two halfs of the array
+        // applies merge sort on the two halfs of the array
         merge(first, mid, cmp);
         merge(mid, last, cmp);
 
-        auto size_1 {size / 2};
-        auto size_2 {size - size_1};
+        // MERGES THE TWO HALFS OF THE ARRAY, KEEPING THEM SORTED
+        auto size_L {size / 2};
+        auto size_R {size - size_L};
+
+        auto temp = *first;
+        using RangeType = decltype(temp);
 
         // Creates two temp arrays to store the two sorted ranges
-        int range_1[size_1];
-        int range_2[size_2];
+        RangeType* range_L = new RangeType[size_L];
+        RangeType* range_R = new RangeType[size_R];
 
         // Copies the values of the two ranges to the arrays
-        std::copy(first, mid, range_1);
-        std::copy(mid, last, range_2);
+        std::copy(first, mid, range_L);
+        std::copy(mid, last, range_R);
 
         auto i {0};
         auto j {0};
         // Itereates over the two arrays, putting the values back to the original range in the right order
-        while (i < size_1 && j < size_2) {
-            if (cmp(range_1[i], range_2[j])) {
-                *first = range_1[i];
+        while (i < size_L && j < size_R) {
+            if (cmp(range_L[i], range_R[j])) {
+                *first = range_L[i];
                 i++;
             } else {
-                *first = range_2[j];
+                *first = range_R[j];
                 j++;
             }
             first++;
         }
 
         // If the there was any values left in any of the arrays, copies them to the end of the original range
-        if (i < size_1)
-            std::copy(&range_1[i], &range_1[size_1], first);
-        else if (j < size_2)
-            std::copy(&range_2[j], &range_2[size_2], first);
+        if (i < size_L)
+            std::copy(&range_L[i], &range_L[size_L], first);
+        else if (j < size_R)
+            std::copy(&range_R[j], &range_R[size_R], first);
+
+        delete range_L;
+        delete range_R;
     }
     //}}} MERGE SORT
 
