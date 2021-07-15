@@ -107,7 +107,17 @@ namespace sa { // sa = sorting algorithms
     //{{{ SELECTION SORT
     template< typename RandomIt, typename Compare >
     void selection(RandomIt first, RandomIt last, Compare cmp){
-       
+       for (auto i = first; i != last - 1; ++i) {
+        auto smallest = i;
+        for (auto j = i + 1; j != last; j++) {
+            if (cmp(*j, *smallest)) {
+                smallest = j;
+            }
+        }
+        if(i != smallest) {
+            std::iter_swap(smallest, i);
+        }
+       }
     }
     //}}} SELECTION SORT
 
