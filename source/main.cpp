@@ -16,6 +16,7 @@
 #include <random>
 #include <bits/stdc++.h>
 #include <utility>
+#include <iterator>
 using std::function;
 
 #include "lib/sorting.h"
@@ -259,6 +260,10 @@ int main( int argc, char * argv[] ){
             // Select the first sorting algorithm.
             auto size {run_opt.sample_step() * ns};
             dataset.resize(size);
+
+            std::vector<int> backup;
+            backup.resize(size);
+
             AlgorithmCollection algorithms{};
             out_file << size << '\t';
             while (not algorithms.has_ended()) {
@@ -267,10 +272,12 @@ int main( int argc, char * argv[] ){
                 std::cout << "\t >>> Running " << algorithms.to_string() << " with size " << size << "...\n";
                 double elapsed_time_mean = 0;
                 for (auto ct_run(0); ct_run < N_RUNS; ++ct_run) {
+                    std::copy(dataset.begin_data(), dataset.end_data(), backup.begin());
+//                     std::cout << std::distance(backup.begin(), backup.end()) << '\n';
                     // Reset timer
                     auto start = std::chrono::steady_clock::now();
                     //================================================================================
-                    algorithms.call_curr(dataset.begin_data(), dataset.end_data(), compare);
+                    algorithms.call_curr(backup.begin(), backup.end(), compare);
                     //================================================================================
                     auto end = std::chrono::steady_clock::now();
                     // How long did it take?

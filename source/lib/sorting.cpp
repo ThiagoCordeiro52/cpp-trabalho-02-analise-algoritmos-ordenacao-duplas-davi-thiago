@@ -55,4 +55,6 @@ int main( int argc, char *argv[] ) {
     test(insertion<int*, std::function<bool(int, int)>>);
     std::cout << "Select sort: \n"; 
     test(selection<int*, std::function<bool(int, int)>>);
+    std::cout << "Quicksort: \n"; 
+    test(quick<int*, std::function<bool(int, int)>>);
 }

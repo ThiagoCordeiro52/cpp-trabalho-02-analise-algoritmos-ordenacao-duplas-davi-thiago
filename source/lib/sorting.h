@@ -262,24 +262,54 @@ namespace sa { // sa = sorting algorithms
      * @return An iterator to the new pivot location within the range.
      */
     template<class FwrdIt, class Compare>
-    FwrdIt partition(FwrdIt first, FwrdIt last, FwrdIt pivot, Compare cmp){
-        // Let us apply the Lamuto's median-of-three pivot selection strategy
-        // to avoid segfault (stack overflow) in case the array is already
-        // sorted.
-
+    FwrdIt partition(FwrdIt first, FwrdIt last, FwrdIt pivot, Compare cmp) {
+        std::iter_swap(pivot, last - 1);
         // Slow/fast approach: operating within the own range.
+        auto slow {first};
+        auto fast {first};
 
         // Traverse range, rearranging the elements
             // Move smallest to the front region of the array.
             // Advance frontier..
+        while (fast != last) {
+            if (cmp(*fast, *pivot)) {
+                std::iter_swap(fast, slow);
+                slow++;
+            }
+            fast++;
+        }
 
         // We need a final swap, so that the pivot end up in its final position
         // in the sorted array.
+
+        std::iter_swap(slow, pivot);
+
+        return slow;
     }
     /// Quick sort implementation.
     template<typename RandomIt, typename Compare>
-    void quick(RandomIt first,RandomIt last,Compare comp){
-        // TODO
+    void quick(RandomIt first, RandomIt last, Compare cmp) {
+        auto size {std::distance(first, last)};
+
+        if (size <= 1)
+            return;
+
+        // Let us apply the Lamuto's median-of-three pivot selection strategy
+        // to avoid segfault (stack overflow) in case the array is already
+        // sorted.
+
+        auto mid {first + size / 2 };
+        if (cmp(*(last - 1), *first))
+            std::iter_swap(last - 1, first);
+        if (cmp(*mid, *first))
+            std::iter_swap(mid, first);
+        if (cmp(*mid, *(last - 1)))
+            std::iter_swap(mid, last - 1); // To ensure the median is the last value
+        
+        auto pivot {partition(first, last, last - 1, cmp)};
+
+        quick(first, pivot, cmp);
+        quick(pivot + 1, last, cmp);
     }
     //}}} QUICK SORT
 };
