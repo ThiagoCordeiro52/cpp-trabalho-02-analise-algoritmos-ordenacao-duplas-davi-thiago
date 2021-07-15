@@ -91,12 +91,10 @@ namespace sa { // sa = sorting algorithms
     /// Implementation of the Insertion Sort algorithm.
     template< typename RandomIt, typename Compare >
     void insertion(RandomIt first, RandomIt last, Compare cmp){
-        for(auto i = first + 1; i != last; i++) 
-        {
+        for(auto i = first + 1; i != last; i++) {
             auto auxiliaryI = *i;
             auto j = i;
-            for (; (j != first) && cmp(auxiliaryI, *(j - 1)); j-- ) 
-            {
+            for (; (j != first) && cmp(auxiliaryI, *(j - 1)); j-- ) {
                  *j = *(j-1);
             }
             *j = auxiliaryI;
@@ -148,7 +146,7 @@ namespace sa { // sa = sorting algorithms
 
         // k will be incremented at each iteraction,
         // and the gap will be 2 * floor(n / 2^(k + 1)) + 1 at each iteraction, until it is 1
-        int k{ 1 };
+        int k {1};
         int gap;
         do {
             gap = 2 * floor(n / pow(2, k + 1)) + 1;

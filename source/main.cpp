@@ -13,6 +13,8 @@
 #include <cassert>
 #include <algorithm>
 #include <functional>
+#include <random>
+#include <bits/stdc++.h>
 using std::function;
 
 #include "lib/sorting.h"
@@ -56,6 +58,107 @@ struct RunningOpt{
     }
 };
 
+enum DataCode {
+    START,
+    NON_DECREASING,
+    NON_INCREASING,
+    ALL_RANDOM,
+    SORTED_75,
+    SORTED_50,
+    SORTED_25,
+    END,
+};
+
+class DataSet {
+    std::vector<int> data;
+    DataCode curr_dataset;
+
+    public:
+        DataSet(const RunningOpt& run_opt) {
+            data.reserve(run_opt.max_sample_sz);
+            curr_dataset = START;
+            next();
+        }
+
+        void resize(size_t size) {
+            data.resize(size);
+        }
+
+        bool has_ended() {
+            return curr_dataset >= END;
+        }
+
+        void next() {
+            curr_dataset = static_cast<DataCode>(curr_dataset + 1);
+            std::default_random_engine generator;
+            generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+            bool sort_percent {false};
+            float percentage;
+            
+            switch (curr_dataset) {
+                case NON_DECREASING: {
+                    for (size_t i {0}; i < data.size(); i++) {
+                        data[i] = i;
+                    }
+                } break;
+                case NON_INCREASING: {
+                    for (size_t i {0}; i < data.size(); i++) {
+                        data[i] = data.size() - i - 1;
+                    }
+                } break;
+                case ALL_RANDOM: {
+                    std::uniform_int_distribution<int> distribution(0, data.size() - 1);
+                    for (size_t i {0}; i < data.size(); i++) {
+                        data[i] = distribution(generator);
+                    }
+                } break;
+                case SORTED_75: {
+                    sort_percent = true;
+                    percentage = 0.25;
+                } break;
+                case SORTED_50: {
+                    sort_percent = true;
+                    percentage = 0.5;
+                } break;
+                case SORTED_25: {
+                    sort_percent = true;
+                    percentage = 0.75;
+                } break;
+                default: break;
+            }
+            if (sort_percent) {
+//                 std::uniform_int_distribution<int> distribution(0, ((long)INT_MAX - INT_MIN) / data.size());
+//                 data[0] = INT_MIN + distribution(generator);
+//                 int I[data.size()];
+//                 for (size_t i {0}; i < data.size(); i++) {
+//                     data[i] = data[i - 1] + distribution(generator);
+//                     I[i] = i;
+//                 }
+//                 for (size_t i {0}; i < percentage * data.size(); i += 2) {
+//                     std::swap(data[I[i]], data[I[i + 1]]);
+//                 }
+                int I[data.size()];
+                for (size_t i {0}; i < data.size(); i++) {
+                    data[i] = i;
+                    I[i] = i;
+                }
+                std::shuffle(I, &I[data.size()], generator);
+                for (size_t i {0}; i < percentage * data.size(); i += 2) {
+                    std::swap(data[I[i]], data[I[i + 1]]);
+                }
+            }
+        }
+
+        std::vector<int>::iterator begin_data() {
+            return data.begin();
+        }
+
+        std::vector<int>::iterator end_data() {
+            return data.end();
+        }
+        
+};
+
 /// Comparison function for the test experiment.
 constexpr bool compare( const int&a, const int &b ){
     return ( a < b );
@@ -73,18 +176,24 @@ int main( int argc, char * argv[] ){
     // sort_suit [running_options] <nominal_alg_list>
     // $./sort_suite -min 10000 -max 100000 -s 25 quick insertion radix
     RunningOpt run_opt;
+    DataSet dataset{run_opt};
 
     // FOR EACH DATA SCENARIO DO...
-    while(not dataset.has_ended()){
+    while (not dataset.has_ended()){
+        std::cout << "[ ";
+        for (auto i {dataset.begin_data()}; i != dataset.end_data(); i++){
+            std::cout << *i << ' ';
+        }
+        std::cout << "]\n";
         // Collect data in a linear (arithmetic) scale.
         // FOR EACH SAMPLE SIZE DO...
-        for ( auto ns{0} ; ns < run_opt.n_samples ; ++ns ){
+        for (auto ns{0}; ns < run_opt.n_samples; ++ns) {
             // FOR EACH SORTING ALGORITHM DO...
             // Select the first sorting algorithm.
-            while ( not sort_algs.has_ended() ){
+            while (not sort_algs.has_ended()) {
                 // Run each algorithm N_RUN times and calculate a sample avarage for each dependent variable.
                 // FOR EACH RUN DO...This is necessary to reduce any measurement noise.
-                for( auto ct_run(0) ; ct_run < N_RUNS ; ++ct_run ) {
+                for (auto ct_run(0); ct_run < N_RUNS; ++ct_run) {
                     // Reset timer
                     start = std::chrono::steady_clock::now();
                     //================================================================================
@@ -92,7 +201,7 @@ int main( int argc, char * argv[] ){
                     //================================================================================
                     end = std::chrono::steady_clock::now();
                     // How long did it take?
-                    auto diff( end - start );
+                    auto diff {end - start};
                     // -------------------------------------------------------------------------------
                     // Calculating a running (repeatedly updated) sample average.
                     // Updating elapsed time sample mean.
@@ -109,8 +218,8 @@ int main( int argc, char * argv[] ){
             data_line.str("");
         } // Loop through each sample size required.
         // Go to the next active scenario.
-        dataset.next();
-        // Close the file corresponding to this dataset.
+     dataset.next();
+     // Close the file corresponding to this dataset.
         out_file.close();
     } // Loop data scenarios.
 
