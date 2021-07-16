@@ -151,12 +151,10 @@ namespace sa { // sa = sorting algorithms
     /// Implementation of the Insertion Sort algorithm.
     template< typename RandomIt, typename Compare >
     void insertion(RandomIt first, RandomIt last, Compare cmp){
-        for(auto i = first + 1; i != last; i++) 
-        {
+        for(auto i = first + 1; i != last; i++) {
             auto auxiliaryI = *i;
             auto j = i;
-            for (; (j != first) && cmp(auxiliaryI, *(j - 1)); j-- ) 
-            {
+            for (; (j != first) && cmp(auxiliaryI, *(j - 1)); j-- ) {
                  *j = *(j-1);
             }
             *j = auxiliaryI;
@@ -168,15 +166,15 @@ namespace sa { // sa = sorting algorithms
     template< typename RandomIt, typename Compare >
     void selection(RandomIt first, RandomIt last, Compare cmp){
        for (auto i = first; i != last - 1; ++i) {
-        auto smallest = i;
-        for (auto j = i + 1; j != last; j++) {
-            if (cmp(*j, *smallest)) {
-                smallest = j;
+            auto smallest = i;
+            for (auto j = i + 1; j != last; j++) {
+                if (cmp(*j, *smallest)) {
+                    smallest = j;
+                }
             }
-        }
-        if(i != smallest) {
-            std::iter_swap(smallest, i);
-        }
+            if(i != smallest) {
+                std::iter_swap(smallest, i);
+            }
        }
     }
     //}}} SELECTION SORT
@@ -218,7 +216,7 @@ namespace sa { // sa = sorting algorithms
 
         // k will be incremented at each iteraction,
         // and the gap will be 2 * floor(n / 2^(k + 1)) + 1 at each iteraction, until it is 1
-        int k{ 1 };
+        int k {1};
         int gap;
         do {
             gap = 2 * floor(n / pow(2, k + 1)) + 1;
@@ -260,40 +258,47 @@ namespace sa { // sa = sorting algorithms
 
         auto mid {first + size / 2 };
 
-        // merge sort the two halfs of the array
+        // applies merge sort on the two halfs of the array
         merge(first, mid, cmp);
         merge(mid, last, cmp);
 
-        auto size_1 {size / 2};
-        auto size_2 {size - size_1};
+        // MERGES THE TWO HALFS OF THE ARRAY, KEEPING THEM SORTED
+        auto size_L {size / 2};
+        auto size_R {size - size_L};
+
+        auto temp = *first;
+        using RangeType = decltype(temp);
 
         // Creates two temp arrays to store the two sorted ranges
-        int range_1[size_1];
-        int range_2[size_2];
+        RangeType* range_L = new RangeType[size_L];
+        RangeType* range_R = new RangeType[size_R];
 
         // Copies the values of the two ranges to the arrays
-        std::copy(first, mid, range_1);
-        std::copy(mid, last, range_2);
+        std::copy(first, mid, range_L);
+        std::copy(mid, last, range_R);
 
         auto i {0};
         auto j {0};
         // Itereates over the two arrays, putting the values back to the original range in the right order
-        while (i < size_1 && j < size_2) {
-            if (cmp(range_1[i], range_2[j])) {
-                *first = range_1[i];
+        while (i < size_L && j < size_R) {
+            if (cmp(range_L[i], range_R[j])) {
+                *first = range_L[i];
                 i++;
             } else {
-                *first = range_2[j];
+                *first = range_R[j];
                 j++;
             }
             first++;
         }
 
         // If the there was any values left in any of the arrays, copies them to the end of the original range
-        if (i < size_1)
-            std::copy(&range_1[i], &range_1[size_1], first);
-        else if (j < size_2)
-            std::copy(&range_2[j], &range_2[size_2], first);
+        if (i < size_L)
+            std::copy(&range_L[i], &range_L[size_L], first);
+        else if (j < size_R)
+            std::copy(&range_R[j], &range_R[size_R], first);
+
+        delete range_L;
+        delete range_R;
     }
     //}}} MERGE SORT
 
@@ -317,24 +322,54 @@ namespace sa { // sa = sorting algorithms
      * @return An iterator to the new pivot location within the range.
      */
     template<class FwrdIt, class Compare>
-    FwrdIt partition(FwrdIt first, FwrdIt last, FwrdIt pivot, Compare cmp){
-        // Let us apply the Lamuto's median-of-three pivot selection strategy
-        // to avoid segfault (stack overflow) in case the array is already
-        // sorted.
-
+    FwrdIt partition(FwrdIt first, FwrdIt last, FwrdIt pivot, Compare cmp) {
+        std::iter_swap(pivot, last - 1);
         // Slow/fast approach: operating within the own range.
+        auto slow {first};
+        auto fast {first};
 
         // Traverse range, rearranging the elements
             // Move smallest to the front region of the array.
             // Advance frontier..
+        while (fast != last) {
+            if (cmp(*fast, *pivot)) {
+                std::iter_swap(fast, slow);
+                slow++;
+            }
+            fast++;
+        }
 
         // We need a final swap, so that the pivot end up in its final position
         // in the sorted array.
+
+        std::iter_swap(slow, pivot);
+
+        return slow;
     }
     /// Quick sort implementation.
     template<typename RandomIt, typename Compare>
-    void quick(RandomIt first,RandomIt last,Compare comp){
-        // TODO
+    void quick(RandomIt first, RandomIt last, Compare cmp) {
+        auto size {std::distance(first, last)};
+
+        if (size <= 1)
+            return;
+
+        // Let us apply the Lamuto's median-of-three pivot selection strategy
+        // to avoid segfault (stack overflow) in case the array is already
+        // sorted.
+
+        auto mid {first + size / 2 };
+        if (cmp(*(last - 1), *first))
+            std::iter_swap(last - 1, first);
+        if (cmp(*mid, *first))
+            std::iter_swap(mid, first);
+        if (cmp(*mid, *(last - 1)))
+            std::iter_swap(mid, last - 1); // To ensure the median is the last value
+        
+        auto pivot {partition(first, last, last - 1, cmp)};
+
+        quick(first, pivot, cmp);
+        quick(pivot + 1, last, cmp);
     }
     //}}} QUICK SORT
 };

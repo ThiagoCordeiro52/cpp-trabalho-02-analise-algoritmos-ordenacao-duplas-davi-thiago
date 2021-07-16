@@ -57,4 +57,6 @@ int main( int argc, char *argv[] ) {
     test(selection<int*, std::function<bool(int, int)>>);
     std::cout << "Radix sort: \n"; 
     test(radix<int*, std::function<bool(int, int)>>);
+    std::cout << "Quicksort: \n"; 
+    test(quick<int*, std::function<bool(int, int)>>);
 }
