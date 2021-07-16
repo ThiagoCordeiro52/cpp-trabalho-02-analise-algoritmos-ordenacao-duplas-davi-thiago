@@ -6,9 +6,9 @@ Preencha os dados abaixo para identificar a autoria do trabalho.
 - Email: *jose.davi@imd.ufrn.br*
 - Turma: *DIM0120-T01*
 
-- Nome: *<insira seu nome aqui>*
-- Email: *<insira seu email aqui>*
-- Turma: *<insira sua turma aqui>*
+- Nome: *Thiago de Oliveira Cordeiro*
+- Email: *thiagoty52@gmail.com*
+- Turma: *DIM0120-T01*
 
 # Indique quais algoritmos foram implementados nos experimentos
 
