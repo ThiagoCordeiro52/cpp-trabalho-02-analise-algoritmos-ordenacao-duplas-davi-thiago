@@ -43,40 +43,39 @@ namespace sa { // sa = sorting algorithms
         return oss.str();
     }
 
-    void countingSort(int * first, int * last, int power, int base, int temp) {
+    // Auxiliary function for radix sort function
+
+    void countingSort(int * first, int * last, int divider, int base, int * arrayTemporary, int quantityElements) {
         int t;
         int acumalador {0};
-        int counter {0};
+        int c[base];
 
-        std::vector<int> c;
-        c.reserve(base);
-
-        for (auto i = 0; i < base; i++) 
+        // Reset all array values
+        for (int i = 0; i < base; i++) 
         {
             c[i] = 0;
         }
 
         for (auto i = first; i != last; i++) {
-            c[( *(first + counter) / power) % base]++;
-            counter++;
+            c[(*i / divider) % base]++; // Count of the digit currently interested in the current key.
         }
 
+        // Sum of positional houses
         for(auto j = 0; j < base; j++) {
             t = c[j];
             c[j] = acumalador;
             acumalador += t;
         }
 
-        counter = 0;
+        // Copy elements to temporary vector
         for (auto i = first; i != last; i++) {
-            temp[c[( *(first + counter) / power) % base]] = *(first + counter);
-            c[(*(first + counter)/power)%base]++;
-            counter++;
+            arrayTemporary[c[( *i / divider) % base]] = *i;
+            c[( *i / divider) % base]++;
         }
 
-        for (auto i = temp.begin(); i != temp.end(); i++) {
-            *first = *i;
-            first++;
+        // Copy values to array
+        for (auto i = 0; i < quantityElements; i++) {
+            *(first + i) = arrayTemporary[i];
         }
     }
 
@@ -93,30 +92,31 @@ namespace sa { // sa = sorting algorithms
      */
     template < typename FwrdIt, typename Comparator, typename value_type=long >
     void radix( FwrdIt first, FwrdIt last, Comparator){
-        // [1] Determine how many digits the largest integer in the incoming range has.
-
-        int quantity {1};
-        int divisor {1};
+        int quantityElements {0};
+        int divider {1};
         auto max = *first;
+
+        // Calculation of the highest value
         for (auto i = first; i != last; i++) {
             if (*i > max) {
                 max = *i;
             }
         }
 
+        // Calculating the amount of elements
         for(auto j = first; j != last; j++) {
-            quantity++;
+            quantityElements++;
         }
 
-       
-        std::vector<int> temp;
-        temp.reserve(quantity);
+       int arrayTemporary[quantityElements];
+
         while (max > 0) {
-            countingSort(first, last, divisor, 10, temp);
-            divisor *= 10;
+            countingSort(first, last, divider, 10, arrayTemporary, quantityElements); // Calling auxiliary function to sort by digit
+            // Below update values are based on base 10
+            divider *= 10; 
             max /= 10;
         }
-
+        // [1] Determine how many digits the largest integer in the incoming range has.
         // [2] Traverse the entire range 'n_digits' times, from the less significant to the most significant (i.e. from left to right).
 //         for ( size_t i{0} ; i < n_digits ; ++i ){
             // [a]=== Buckets creation.

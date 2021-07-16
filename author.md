@@ -12,13 +12,13 @@ Preencha os dados abaixo para identificar a autoria do trabalho.
 
 # Indique quais algoritmos foram implementados nos experimentos
 
-- [ ] Insertion sort
-- [ ] Selection sort
+- [X] Insertion sort
+- [X] Selection sort
 - [X] Bubble sort
 - [X] Shell sort
 - [X] Quick sort
 - [X] Merge sort
-- [ ] Radix sort
+- [X] Radix sort
 
 # Indique quais dos cenários de dados abaixo você conseguiu simular nos experimentos
 
