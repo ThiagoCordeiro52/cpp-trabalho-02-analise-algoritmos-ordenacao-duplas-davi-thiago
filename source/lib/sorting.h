@@ -43,6 +43,43 @@ namespace sa { // sa = sorting algorithms
         return oss.str();
     }
 
+    void countingSort(int * first, int * last, int power, int base, int temp) {
+        int t;
+        int acumalador {0};
+        int counter {0};
+
+        std::vector<int> c;
+        c.reserve(base);
+
+        for (auto i = 0; i < base; i++) 
+        {
+            c[i] = 0;
+        }
+
+        for (auto i = first; i != last; i++) {
+            c[( *(first + counter) / power) % base]++;
+            counter++;
+        }
+
+        for(auto j = 0; j < base; j++) {
+            t = c[j];
+            c[j] = acumalador;
+            acumalador += t;
+        }
+
+        counter = 0;
+        for (auto i = first; i != last; i++) {
+            temp[c[( *(first + counter) / power) % base]] = *(first + counter);
+            c[(*(first + counter)/power)%base]++;
+            counter++;
+        }
+
+        for (auto i = temp.begin(); i != temp.end(); i++) {
+            *first = *i;
+            first++;
+        }
+    }
+
     //{{{ RADIX SORT
     /*!
      * This function implements the Radix Sorting Algorithm based on the **less significant digit** (LSD).
@@ -55,8 +92,31 @@ namespace sa { // sa = sorting algorithms
      * @tparam Comparator A Comparator type function tha returns true if first argument is less than the second argument.
      */
     template < typename FwrdIt, typename Comparator, typename value_type=long >
-    void radix( FwrdIt first, FwrdIt last, Comparator ){
+    void radix( FwrdIt first, FwrdIt last, Comparator){
         // [1] Determine how many digits the largest integer in the incoming range has.
+
+        int quantity {1};
+        int divisor {1};
+        auto max = *first;
+        for (auto i = first; i != last; i++) {
+            if (*i > max) {
+                max = *i;
+            }
+        }
+
+        for(auto j = first; j != last; j++) {
+            quantity++;
+        }
+
+       
+        std::vector<int> temp;
+        temp.reserve(quantity);
+        while (max > 0) {
+            countingSort(first, last, divisor, 10, temp);
+            divisor *= 10;
+            max /= 10;
+        }
+
         // [2] Traverse the entire range 'n_digits' times, from the less significant to the most significant (i.e. from left to right).
 //         for ( size_t i{0} ; i < n_digits ; ++i ){
             // [a]=== Buckets creation.

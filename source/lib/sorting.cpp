@@ -55,4 +55,6 @@ int main( int argc, char *argv[] ) {
     test(insertion<int*, std::function<bool(int, int)>>);
     std::cout << "Select sort: \n"; 
     test(selection<int*, std::function<bool(int, int)>>);
+    std::cout << "Radix sort: \n"; 
+    test(radix<int*, std::function<bool(int, int)>>);
 }
