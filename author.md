@@ -22,12 +22,12 @@ Preencha os dados abaixo para identificar a autoria do trabalho.
 
 # Indique quais dos cenários de dados abaixo você conseguiu simular nos experimentos
 
-- [ ] todos randômicos
-- [ ] parcialmente ordenado (75%)
-- [ ] parcialmente ordenado (50%)
-- [ ] parcialmente ordenado (25%)
-- [ ] dados em ordem não-decrescente
-- [ ] dados em ordem não-crescente
+- [X] todos randômicos
+- [X] parcialmente ordenado (75%)
+- [X] parcialmente ordenado (50%)
+- [X] parcialmente ordenado (25%)
+- [X] dados em ordem não-decrescente
+- [X] dados em ordem não-crescente
 
 # Escreva a quantidade de amostras coletadas por experimento
 

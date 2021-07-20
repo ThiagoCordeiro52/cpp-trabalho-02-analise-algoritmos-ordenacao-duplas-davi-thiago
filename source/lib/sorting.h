@@ -43,40 +43,36 @@ namespace sa { // sa = sorting algorithms
         return oss.str();
     }
 
-    // Auxiliary function for radix sort function
-
-    void countingSort(int * first, int * last, int divider, int base, int * arrayTemporary, int quantityElements) {
-        int t;
-        int acumalador {0};
-        int c[base];
-
-        // Reset all array values
-        for (int i = 0; i < base; i++) 
-        {
-            c[i] = 0;
-        }
+    /// Auxiliary function for radix sort function
+    template < typename FwrdIt >
+    void countingSort(FwrdIt first, FwrdIt last, int divider) {
+        std::vector<int> count(10); // since the numbers are base 10
 
         for (auto i = first; i != last; i++) {
-            c[(*i / divider) % base]++; // Count of the digit currently interested in the current key.
+            count[(*i / divider) % 10]++; // Count of the digit currently interested in the current key.
         }
 
-        // Sum of positional houses
-        for(auto j = 0; j < base; j++) {
-            t = c[j];
-            c[j] = acumalador;
-            acumalador += t;
+        // Sum of the digits
+        int acumalator {0};
+        for (auto j = 0; j < 10; j++) {
+            auto aux {count[j]};
+            count[j] = acumalator;
+            acumalator += aux;
         }
+
+        auto size {std::distance(first, last)};
+        auto temp {*first};
+        using ValueType = decltype(temp);
+        vector<ValueType> temp_array(size);
 
         // Copy elements to temporary vector
         for (auto i = first; i != last; i++) {
-            arrayTemporary[c[( *i / divider) % base]] = *i;
-            c[( *i / divider) % base]++;
+            temp_array[count[(*i / divider) % 10]] = *i;
+            count[(*i / divider) % 10]++;
         }
 
         // Copy values to array
-        for (auto i = 0; i < quantityElements; i++) {
-            *(first + i) = arrayTemporary[i];
-        }
+        std::copy(temp_array.begin(), temp_array.end(), first);
     }
 
     //{{{ RADIX SORT
@@ -92,58 +88,15 @@ namespace sa { // sa = sorting algorithms
      */
     template < typename FwrdIt, typename Comparator, typename value_type=long >
     void radix( FwrdIt first, FwrdIt last, Comparator){
-        int quantityElements {0};
         int divider {1};
-        auto max = *first;
-
-        // Calculation of the highest value
-        for (auto i = first; i != last; i++) {
-            if (*i > max) {
-                max = *i;
-            }
-        }
-
-        // Calculating the amount of elements
-        for(auto j = first; j != last; j++) {
-            quantityElements++;
-        }
-
-       int arrayTemporary[quantityElements];
-
+        auto max {*std::max_element(first, last)};
+        // Loop, until gone trough all digits of max
         while (max > 0) {
-            countingSort(first, last, divider, 10, arrayTemporary, quantityElements); // Calling auxiliary function to sort by digit
-            // Below update values are based on base 10
+            countingSort(first, last, divider); // Calling auxiliary function to sort by digit
+            // Below update values that are based on base 10
             divider *= 10; 
             max /= 10;
         }
-        // [1] Determine how many digits the largest integer in the incoming range has.
-        // [2] Traverse the entire range 'n_digits' times, from the less significant to the most significant (i.e. from left to right).
-//         for ( size_t i{0} ; i < n_digits ; ++i ){
-            // [a]=== Buckets creation.
-            // We create the 10 buckets each iteration so that they start empty every time through.
-
-            // [b]=== Range traversal and values distriburion into buckets.
-            // For each value of the range we need to examine i-th less significant digit
-            // so that we can assign the value to the corresponding bucket.
-
-            // ==============================================================
-            // What the for_each above does is:
-            // --------------------------------------------------------------
-            // Assuming value=123 and that the largest number in the collection has 4 digits.
-            // 1st pass: 123/1 = 123; 123 % 10 = 3. buckets[3].push_back(123).
-            // 2nd pass: 123/10 = 12; 12 % 10 = 2.  buckets[2].push_back(123).
-            // 3rd pass: 123/100 = 1; 1 % 10 = 1.   buckets[1].push_back(123).
-            // 4th pass: 123/1000 = 0; 0 % 10 = 0.  buckets[0].push_back(123).
-
-            // [c]=== Reverse movement from buckets back into range.
-            // At the end of the traversal, we copy all values from the buckets
-            // back to the original range. They naturally come in ascending order
-            // considering the current i-th digit.
-                // Points to the location in memory where the values should be copied to.
-                // For each bucket...
-                    // ... copy the bucket's stored values back into the range, and
-            // ...at the same time, update the destination pointer for the next iteration.
-//         } // for to traverse the digits.
     }
     //}}} RADIX SORT
 
@@ -151,11 +104,11 @@ namespace sa { // sa = sorting algorithms
     /// Implementation of the Insertion Sort algorithm.
     template< typename RandomIt, typename Compare >
     void insertion(RandomIt first, RandomIt last, Compare cmp){
-        for(auto i = first + 1; i != last; i++) {
+        for (auto i = first + 1; i != last; i++) {
             auto auxiliaryI = *i;
             auto j = i;
             for (; (j != first) && cmp(auxiliaryI, *(j - 1)); j-- ) {
-                 *j = *(j-1);
+                *j = *(j-1);
             }
             *j = auxiliaryI;
         }
@@ -165,17 +118,15 @@ namespace sa { // sa = sorting algorithms
     //{{{ SELECTION SORT
     template< typename RandomIt, typename Compare >
     void selection(RandomIt first, RandomIt last, Compare cmp){
-       for (auto i = first; i != last - 1; ++i) {
+        for (auto i = first; i != last - 1; ++i) {
             auto smallest = i;
             for (auto j = i + 1; j != last; j++) {
                 if (cmp(*j, *smallest)) {
                     smallest = j;
                 }
             }
-            if(i != smallest) {
-                std::iter_swap(smallest, i);
-            }
-       }
+            std::iter_swap(smallest, i);
+        }
     }
     //}}} SELECTION SORT
 
@@ -191,12 +142,16 @@ namespace sa { // sa = sorting algorithms
      */
     template< typename RandomIt, typename Compare >
     void bubble(RandomIt first, RandomIt last, Compare cmp){
-        for (auto i{ first }; i != last - 1; i++) {
-            for (auto j{ i + 1 }; j != last; j++) {
-                if (cmp(*j, *i))
-                    std::iter_swap(i, j);
+        do {
+            auto new_last {first};
+            for (auto i{ first + 1 }; i != last; i++) {
+                if (cmp(*i, *(i - 1))) {
+                    std::iter_swap(i - 1, i);
+                    new_last = i;
+                }
             }
-        }
+            last = new_last;
+        } while (std::distance(first, last) > 1);
     }
     //}}} BUBBLE SORT
 
@@ -267,11 +222,11 @@ namespace sa { // sa = sorting algorithms
         auto size_R {size - size_L};
 
         auto temp = *first;
-        using RangeType = decltype(temp);
+        using ValueType = decltype(temp);
 
         // Creates two temp arrays to store the two sorted ranges
-        RangeType* range_L = new RangeType[size_L];
-        RangeType* range_R = new RangeType[size_R];
+        ValueType* range_L = new ValueType[size_L];
+        ValueType* range_R = new ValueType[size_R];
 
         // Copies the values of the two ranges to the arrays
         std::copy(first, mid, range_L);
@@ -297,8 +252,8 @@ namespace sa { // sa = sorting algorithms
         else if (j < size_R)
             std::copy(&range_R[j], &range_R[size_R], first);
 
-        delete range_L;
-        delete range_R;
+        delete [] range_L;
+        delete [] range_R;
     }
     //}}} MERGE SORT
 
@@ -329,19 +284,18 @@ namespace sa { // sa = sorting algorithms
         auto fast {first};
 
         // Traverse range, rearranging the elements
-            // Move smallest to the front region of the array.
-            // Advance frontier..
         while (fast != last) {
+            // Move smallest to the front region of the array.
             if (cmp(*fast, *pivot)) {
                 std::iter_swap(fast, slow);
                 slow++;
             }
+            // Advance frontier..
             fast++;
         }
 
         // We need a final swap, so that the pivot end up in its final position
         // in the sorted array.
-
         std::iter_swap(slow, pivot);
 
         return slow;

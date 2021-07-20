@@ -4,13 +4,14 @@
 #include "sorting.h"
 
 using namespace sa;
+using value_type = int;
 
-bool cmp( int a, int b ) {
+bool cmp( value_type a, value_type b ) {
     return a < b;
 }
 
 template< std::size_t SIZE >
-std::ostream& operator<<( std::ostream& out, const std::array<int, SIZE>& vec ) {
+std::ostream& operator<<( std::ostream& out, const std::array<value_type, SIZE>& vec ) {
     out << "[ ";
     for( auto value : vec )
         out << value << ' ';
@@ -21,10 +22,10 @@ std::ostream& operator<<( std::ostream& out, const std::array<int, SIZE>& vec ) 
 
 template< class Sorting >
 void test( Sorting algorithm ) {
-    std::array<int, 6> arr1 = {1, 2, 3, 4, 5, 6};
-    std::array<int, 6> arr2 = {6, 5, 4, 3, 2, 1};
-    std::array<int, 6> arr3 = {6, 5, 1, 2, 3, 4};
-    std::array<int, 6> arr4 = {1, 5, 2, 4, 3, 6};
+    std::array<value_type, 6> arr1 = {1, 25, 372, 4871, 59600, 61085};
+    std::array<value_type, 10> arr2 = {1886418047, 1465952862, 1342161192, 1150338130, 1089955954, 932730323, 920169337, 797929146, 375143163, 97639692};
+    std::array<value_type, 6> arr3 = {61085, 59600, 1, 25, 372, 4871};
+    std::array<value_type, 6> arr4 = {1, 59600, 25, 4871, 372, 61085};
 
     std::cout << "\tBefore sort: \n"; 
     std::cout << "\t\tArr1: " << arr1;
@@ -46,17 +47,17 @@ void test( Sorting algorithm ) {
 
 int main( int argc, char *argv[] ) {
     std::cout << "Bubble sort: \n"; 
-    test(bubble<int*, std::function<bool(int, int)>>);
+    test(bubble<value_type*, std::function<bool(value_type, value_type)>>);
     std::cout << "Shell sort: \n"; 
-    test(shell<int*, std::function<bool(int, int)>>);
+    test(shell<value_type*, std::function<bool(value_type, value_type)>>);
     std::cout << "Merge sort: \n"; 
-    test(merge<int*, std::function<bool(int, int)>>);
+    test(merge<value_type*, std::function<bool(value_type, value_type)>>);
     std::cout << "Insertion sort: \n"; 
-    test(insertion<int*, std::function<bool(int, int)>>);
+    test(insertion<value_type*, std::function<bool(value_type, value_type)>>);
     std::cout << "Select sort: \n"; 
-    test(selection<int*, std::function<bool(int, int)>>);
+    test(selection<value_type*, std::function<bool(value_type, value_type)>>);
     std::cout << "Radix sort: \n"; 
-    test(radix<int*, std::function<bool(int, int)>>);
+    test(radix<value_type*, std::function<bool(value_type, value_type)>>);
     std::cout << "Quicksort: \n"; 
-    test(quick<int*, std::function<bool(int, int)>>);
+    test(quick<value_type*, std::function<bool(value_type, value_type)>>);
 }
