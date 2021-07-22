@@ -43,38 +43,6 @@ namespace sa { // sa = sorting algorithms
         return oss.str();
     }
 
-    /// Auxiliary function for radix sort function
-    template < typename FwrdIt >
-    void countingSort(FwrdIt first, FwrdIt last, int divider) {
-        std::vector<int> count(10); // since the numbers are base 10
-
-        for (auto i = first; i != last; i++) {
-            count[(*i / divider) % 10]++; // Count of the digit currently interested in the current key.
-        }
-
-        // Sum of the digits
-        int acumalator {0};
-        for (auto j = 0; j < 10; j++) {
-            auto aux {count[j]};
-            count[j] = acumalator;
-            acumalator += aux;
-        }
-
-        auto size {std::distance(first, last)};
-        auto temp {*first};
-        using ValueType = decltype(temp);
-        vector<ValueType> temp_array(size);
-
-        // Copy elements to temporary vector
-        for (auto i = first; i != last; i++) {
-            temp_array[count[(*i / divider) % 10]] = *i;
-            count[(*i / divider) % 10]++;
-        }
-
-        // Copy values to array
-        std::copy(temp_array.begin(), temp_array.end(), first);
-    }
-
     //{{{ RADIX SORT
     /*!
      * This function implements the Radix Sorting Algorithm based on the **less significant digit** (LSD).
@@ -89,14 +57,60 @@ namespace sa { // sa = sorting algorithms
     template < typename FwrdIt, typename Comparator, typename value_type=long >
     void radix( FwrdIt first, FwrdIt last, Comparator){
         int divider {1};
+        int digito {0};
         auto max {*std::max_element(first, last)};
+
+        auto temp {*first};
+        using ValueType = decltype(temp);
+        vector<vector<ValueType>> temp_array(10);
+
         // Loop, until gone trough all digits of max
         while (max > 0) {
-            countingSort(first, last, divider); // Calling auxiliary function to sort by digit
-            // Below update values that are based on base 10
+            int counter{0};
+            for(auto i = first; i < last; i++) {
+                digito = (*i / divider) % 10;
+                temp_array[digito].push_back(*i);
+            }
+
+            for(auto i = 0; i < 10; i++) {
+                int quantidade = temp_array[i].size();
+                for(int j = 0; j < quantidade; j++) {
+                    *(first + counter) = temp_array[i][j];
+                    counter++;
+                }
+            }
+
+            for(auto j = 0; j < 10; j++) {
+                if(temp_array[j].size() > 0) {
+                    temp_array[j].clear();
+                }
+            }
+
+            // // Below update values that are based on base 10
             divider *= 10; 
             max /= 10;
         }
+
+
+
+        // Copy values to array
+        // std::copy(temp_array.begin(), temp_array.end(), first);
+
+            //     for(auto i = first; i != last; ++i) {
+            //     digito = (*i / divider) % 10;
+            //     count[digito]++;  
+            // }
+
+            // // for(int j = 1; j < 10; j++) count[j] += count[j-1];
+
+            // for(auto i = first; i != last; ++i) {
+            //     digito = (*i / divider) % 10;
+            //     posicao = count[digito];
+            //     count[digito] += 1;
+            //     temp_array[posicao] = *i; 
+            // }
+            // for(int i = 0; i < size; i++) *(first+i) = temp_array[i];
+
     }
     //}}} RADIX SORT
 
