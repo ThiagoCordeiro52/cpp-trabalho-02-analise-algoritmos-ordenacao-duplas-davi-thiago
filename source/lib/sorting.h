@@ -86,30 +86,10 @@ namespace sa { // sa = sorting algorithms
                 }
             }
 
-            // // Below update values that are based on base 10
+            // Below update values that are based on base 10
             divider *= 10; 
             max /= 10;
         }
-
-
-
-        // Copy values to array
-        // std::copy(temp_array.begin(), temp_array.end(), first);
-
-            //     for(auto i = first; i != last; ++i) {
-            //     digito = (*i / divider) % 10;
-            //     count[digito]++;  
-            // }
-
-            // // for(int j = 1; j < 10; j++) count[j] += count[j-1];
-
-            // for(auto i = first; i != last; ++i) {
-            //     digito = (*i / divider) % 10;
-            //     posicao = count[digito];
-            //     count[digito] += 1;
-            //     temp_array[posicao] = *i; 
-            // }
-            // for(int i = 0; i < size; i++) *(first+i) = temp_array[i];
 
     }
     //}}} RADIX SORT
